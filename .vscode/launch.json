@@ -1,0 +1,30 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "requireExactSource" : false,
+    "configurations": [
+        
+        
+        {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "D:/projetos/UdemyApiDotNet/bin/Debug/netcoreapp3.1/UdemyApiDotNet.dll",
+            "args": [],
+            "stopAtEntry": false,
+            "console": "internalConsole",
+        },
+        
+        
+        {
+            "name": "C#: UdemyApiDotNet Debug",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "D:/projetos/UdemyApiDotNet/UdemyApiDotNet.csproj"
+        }
+
+    ]
+}
