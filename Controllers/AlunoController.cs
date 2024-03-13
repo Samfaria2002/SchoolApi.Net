@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UdemyApiDotNet.Data;
 using UdemyApiDotNet.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace UdemyApiDotNet.Controllers
 {   
@@ -11,45 +13,23 @@ namespace UdemyApiDotNet.Controllers
     [Route("api/[controller]")]
     public class AlunoController : ControllerBase
     {
+        private readonly DataContext _context;
 
-        public List<Aluno> Alunos = new List<Aluno>() {
-            new Aluno() {
-                Id = 1,
-                Nome = "Marcos",
-                Sobrenome = "Fernandes",
-                Telefone = 123321123
-            },
-            new Aluno() {
-                Id = 2,
-                Nome = "Poliana",
-                Sobrenome = "Ferraz",
-                Telefone = 12123
-            },
-            new Aluno() {
-                Id = 3,
-                Nome = "Matheus",
-                Sobrenome = "Almeida",
-                Telefone = 987281
-            },
-        };
-
-        public AlunoController()
+        public AlunoController(DataContext context)
         {
-            
+            _context = context;
         }
 
         // api/aluno
         [HttpGet]
         public IActionResult Get() {
-            return Ok(Alunos);
+            return Ok(_context.Alunos);
         }
 
         /* [HttpGet("{id:int}")]
             Para acessar: api/aluno/{id} */
-
         /* Para usar via QueryString, a url ficará assim:
         http://localhost:5001/api/aluno/byId?id=1 */
-
         [HttpGet("byId")]
         public IActionResult GetById(int Id) {
 
@@ -58,14 +38,14 @@ namespace UdemyApiDotNet.Controllers
             no "a" do FirstOrDefault e faz uma igualdade onde, o Id da url seja igual ao Id 
             do meu parâmetro "a".
             Caso o id não tenha na lista, ele retorna um BadRequest()*/
-            var aluno = Alunos.FirstOrDefault(a => a.Id == Id);
+            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == Id);
             if (aluno == null) return BadRequest();
             return Ok(aluno);
         }
 
         [HttpGet("byName")]
         public IActionResult GetByName(string nome, string sobrenome) {
-            var aluno = Alunos.FirstOrDefault(
+            var aluno = _context.Alunos.FirstOrDefault(
                 a => a.Nome.Contains(nome) && a.Sobrenome.Contains(sobrenome)
                 );
             if (aluno == null) return BadRequest();
@@ -75,18 +55,36 @@ namespace UdemyApiDotNet.Controllers
         // api/aluno
         [HttpPost]
         public IActionResult Post(Aluno aluno) {
+
+            _context.Add(aluno);
+            _context.SaveChanges();
             return Ok(aluno);
         }
 
-        // api/aluno/{id}
+        // api/aluno/{id} 
+        /*Ao alterar um objeto json pelo put, deve se passar 
+        o id também, senão ele cria um objeto igual, modificado porém 
+        com outro id, ou seja, um outro objeto*/
         [HttpPut("{id}")]
         public IActionResult Put(int id, Aluno aluno) {
+
+            var alu = _context.Alunos.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            if (alu == null) return BadRequest("Aluno não encontrado");
+            _context.Update(aluno);
+            _context.SaveChanges();
             return Ok(aluno);
         }
 
         // api/aluno/{id}
         [HttpPatch("{id}")]
         public IActionResult Patch(int id, Aluno aluno) {
+
+            /*AsNoTracking serve para evitar a redundância 
+            de passar o id pela rota (url) e pelo obj json*/
+            var alu = _context.Alunos.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            if (alu == null) return BadRequest("Aluno não encontrado");
+            _context.Update(aluno);
+            _context.SaveChanges();
             return Ok(aluno);
         }
 
@@ -94,6 +92,10 @@ namespace UdemyApiDotNet.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == id);
+            if (aluno == null) return BadRequest("Aluno não encontrado");
+            _context.Remove(aluno);
+            _context.SaveChanges();
             return Ok();
         }
     }
