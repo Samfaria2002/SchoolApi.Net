@@ -13,17 +13,19 @@ namespace UdemyApiDotNet.Controllers
     [Route("api/[controller]")]
     public class AlunoController : ControllerBase
     {
-        private readonly DataContext _context;
 
-        public AlunoController(DataContext context)
+        public readonly IRepository _repo;
+
+        public AlunoController(IRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         // api/aluno
         [HttpGet]
         public IActionResult Get() {
-            return Ok(_context.Alunos);
+            var response = _repo.GetAllAlunos(false);
+            return Ok(response);
         }
 
         /* [HttpGet("{id:int}")]
@@ -38,16 +40,18 @@ namespace UdemyApiDotNet.Controllers
             no "a" do FirstOrDefault e faz uma igualdade onde, o Id da url seja igual ao Id 
             do meu parâmetro "a".
             Caso o id não tenha na lista, ele retorna um BadRequest()*/
-            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == Id);
+            var aluno = _repo.GetAlunoById(Id, false);
             if (aluno == null) return BadRequest();
             return Ok(aluno);
         }
 
         [HttpGet("byName")]
         public IActionResult GetByName(string nome, string sobrenome) {
-            var aluno = _context.Alunos.FirstOrDefault(
+            var aluno = _repo.GetAlunoByName(nome, sobrenome, false);
+            /*var aluno = _context.Alunos.FirstOrDefault(
                 a => a.Nome.Contains(nome) && a.Sobrenome.Contains(sobrenome)
                 );
+            */
             if (aluno == null) return BadRequest();
             return Ok(aluno);
         }
@@ -56,47 +60,56 @@ namespace UdemyApiDotNet.Controllers
         [HttpPost]
         public IActionResult Post(Aluno aluno) {
 
-            _context.Add(aluno);
-            _context.SaveChanges();
-            return Ok(aluno);
+            _repo.Add(aluno);
+            if (_repo.SaveChanges()) {
+                return Ok(aluno);
+            }
+            return BadRequest("Aluno não cadastrado");
         }
 
-        // api/aluno/{id} 
+        // api/aluno/byId?id={id} 
         /*Ao alterar um objeto json pelo put, deve se passar 
         o id também, senão ele cria um objeto igual, modificado porém 
         com outro id, ou seja, um outro objeto*/
-        [HttpPut("{id}")]
+        [HttpPut("byId")]
         public IActionResult Put(int id, Aluno aluno) {
 
-            var alu = _context.Alunos.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            var alu = _repo.GetAlunoById(id, false);
             if (alu == null) return BadRequest("Aluno não encontrado");
-            _context.Update(aluno);
-            _context.SaveChanges();
-            return Ok(aluno);
+            _repo.Update(aluno);
+            if (_repo.SaveChanges()) {
+                return Ok(aluno);
+            }
+            return BadRequest("Aluno não cadastrado");
         }
 
-        // api/aluno/{id}
-        [HttpPatch("{id}")]
+        // api/aluno/byId?id={id}
+        [HttpPatch("byId")]
         public IActionResult Patch(int id, Aluno aluno) {
 
             /*AsNoTracking serve para evitar a redundância 
             de passar o id pela rota (url) e pelo obj json*/
-            var alu = _context.Alunos.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            var alu = _repo.GetAlunoById(id, false);
             if (alu == null) return BadRequest("Aluno não encontrado");
-            _context.Update(aluno);
-            _context.SaveChanges();
-            return Ok(aluno);
+            _repo.Update(aluno);
+            if (_repo.SaveChanges()) {
+                return Ok(aluno);
+            }
+            return BadRequest("Aluno não cadastrado");
         }
 
-        // api/aluno/{id}
-        [HttpDelete("{id}")]
+        // api/aluno/byId?id={id}
+        [HttpDelete("byId")]
         public IActionResult Delete(int id)
         {
-            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == id);
+            var aluno = _repo.GetAlunoById(id, false);
             if (aluno == null) return BadRequest("Aluno não encontrado");
-            _context.Remove(aluno);
-            _context.SaveChanges();
-            return Ok();
+
+            _repo.Delete(aluno);
+            if (_repo.SaveChanges()) {
+                return Ok("Aluno deletado");
+            }
+            return BadRequest("Aluno não deletado");
         }
     }
 }
