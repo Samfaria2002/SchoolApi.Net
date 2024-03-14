@@ -3,21 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UdemyApiDotNet.Models
+namespace UdemyApiDotNet.Dtos
 {
-    public class Professor
+    public class ProfessorRegistrarDto
     {
-
-        public Professor() {}
-
-        public Professor(int Id, int Registro, string Nome, string Sobrenome, int Telefone) {
-            this.Id = Id;
-            this.Registro = Registro;
-            this.Nome = Nome;
-            this.Sobrenome = Sobrenome;
-            this.Telefone = Telefone;
-        }
-
         public int Id { get; set; }
 
         public int Registro { get; set; }
@@ -35,6 +24,5 @@ namespace UdemyApiDotNet.Models
 
         public bool Ativo { get; set; } = true;
 
-        public IEnumerable<Disciplina> Disciplina { get; set; }
     }
 }

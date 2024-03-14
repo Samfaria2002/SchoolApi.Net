@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using UdemyApiDotNet.Data;
 using UdemyApiDotNet.Models;
 using Microsoft.EntityFrameworkCore;
+using UdemyApiDotNet.Dtos;
+using AutoMapper;
 
 namespace UdemyApiDotNet.Controllers
 {   
@@ -15,17 +17,19 @@ namespace UdemyApiDotNet.Controllers
     {
 
         public readonly IRepository _repo;
+        private readonly IMapper _mapper;
 
-        public AlunoController(IRepository repo)
+        public AlunoController(IRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         // api/aluno
         [HttpGet]
         public IActionResult Get() {
             var response = _repo.GetAllAlunos(false);
-            return Ok(response);
+            return Ok(_mapper.Map<IEnumerable<AlunoDto>>(response));
         }
 
         /* [HttpGet("{id:int}")]
@@ -42,7 +46,9 @@ namespace UdemyApiDotNet.Controllers
             Caso o id não tenha na lista, ele retorna um BadRequest()*/
             var aluno = _repo.GetAlunoById(Id, false);
             if (aluno == null) return BadRequest();
-            return Ok(aluno);
+
+            var alunoDto = _mapper.Map<AlunoDto>(aluno);
+            return Ok(alunoDto);
         }
 
         [HttpGet("byName")]
@@ -53,16 +59,18 @@ namespace UdemyApiDotNet.Controllers
                 );
             */
             if (aluno == null) return BadRequest();
-            return Ok(aluno);
+            var alunoDto = _mapper.Map<AlunoDto>(aluno);
+            return Ok(alunoDto);
         }
 
         // api/aluno
         [HttpPost]
-        public IActionResult Post(Aluno aluno) {
-
+        public IActionResult Post(AlunoRegistrarDto model) {
+            
+            var aluno = _mapper.Map<Aluno>(model);
             _repo.Add(aluno);
             if (_repo.SaveChanges()) {
-                return Ok(aluno);
+                return Created($"/api/aluno/{model.Id}", _mapper.Map<AlunoDto>(aluno));
             }
             return BadRequest("Aluno não cadastrado");
         }
@@ -72,28 +80,34 @@ namespace UdemyApiDotNet.Controllers
         o id também, senão ele cria um objeto igual, modificado porém 
         com outro id, ou seja, um outro objeto*/
         [HttpPut("byId")]
-        public IActionResult Put(int id, Aluno aluno) {
+        public IActionResult Put(int id, AlunoRegistrarDto model) {
 
             var alu = _repo.GetAlunoById(id, false);
             if (alu == null) return BadRequest("Aluno não encontrado");
-            _repo.Update(aluno);
+
+            _mapper.Map(model, alu);
+
+            _repo.Update(alu);
             if (_repo.SaveChanges()) {
-                return Ok(aluno);
+                return Created($"/api/aluno/{model.Id}", _mapper.Map<AlunoDto>(alu));
             }
             return BadRequest("Aluno não cadastrado");
         }
 
         // api/aluno/byId?id={id}
         [HttpPatch("byId")]
-        public IActionResult Patch(int id, Aluno aluno) {
+        public IActionResult Patch(int id, AlunoRegistrarDto model) {
 
             /*AsNoTracking serve para evitar a redundância 
             de passar o id pela rota (url) e pelo obj json*/
             var alu = _repo.GetAlunoById(id, false);
             if (alu == null) return BadRequest("Aluno não encontrado");
-            _repo.Update(aluno);
+
+            _mapper.Map(model, alu);
+
+            _repo.Update(alu);
             if (_repo.SaveChanges()) {
-                return Ok(aluno);
+                return Created($"/api/aluno/{model.Id}", _mapper.Map<AlunoDto>(alu));
             }
             return BadRequest("Aluno não cadastrado");
         }
