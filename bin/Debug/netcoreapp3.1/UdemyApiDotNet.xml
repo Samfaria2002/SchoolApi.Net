@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UdemyApiDotNet</name>
+    </assembly>
+    <members>
+        <member name="T:UdemyApiDotNet.Controllers.AlunoController">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:UdemyApiDotNet.Controllers.AlunoController.#ctor(UdemyApiDotNet.Data.IRepository,AutoMapper.IMapper)">
+             <summary>
+            
+             </summary>
+             <param name="repo"></param>
+             <param name="mapper"></param>
+        </member>
+        <member name="M:UdemyApiDotNet.Controllers.AlunoController.Get">
+            <summary>
+            Método responsável por retornar todos os meus alunos
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UdemyApiDotNet.Controllers.AlunoController.GetById(System.Int32)">
+            <summary>
+            Método responsável por retornar apenas um aluno por meio do Id
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UdemyApiDotNet.Controllers.AlunoController.GetByName(System.String,System.String)">
+            <summary>
+            Método responsável por retornar apenas um aluno por meio do nome e sobrenome
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

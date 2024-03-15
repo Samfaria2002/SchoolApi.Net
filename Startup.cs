@@ -13,6 +13,10 @@ using Microsoft.Extensions.Logging;
 using UdemyApiDotNet.Data;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.IO;
+using System.Reflection;
+using System.Security.Policy;
 
 namespace UdemyApiDotNet
 {
@@ -39,6 +43,32 @@ namespace UdemyApiDotNet
 
             services.AddScoped<IRepository, Repository>();
 
+            services.AddSwaggerGen(options =>{
+                options.SwaggerDoc(
+                    "udemyapi",
+                    new Microsoft.OpenApi.Models.OpenApiInfo() {
+                        Title = "UdemyApi",
+                        Version = "1.0",
+                        TermsOfService = new Uri("http://ApenasParaExemplo.com"),
+                        Description = "Uma web api feita usando .NetCore",
+                        License = new Microsoft.OpenApi.Models.OpenApiLicense{
+                            Name = "Samuel .NetCore Api License",
+                            Url = new Uri("http://mit.com")
+                        },
+                        Contact = new Microsoft.OpenApi.Models.OpenApiContact{
+                            Name = "Samuel Faria Garcia",
+                            Email = "samuel.faria2002@hotmail.com"
+                        }
+                    }
+                );
+
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+
+
+                options.IncludeXmlComments(xmlCommentsFullPath);
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -51,6 +81,11 @@ namespace UdemyApiDotNet
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseSwagger().UseSwaggerUI(options => {
+                options.SwaggerEndpoint("/swagger/udemyapi/swagger.json", "udemyapi");
+                options.RoutePrefix = "";
+            });
 
             app.UseAuthorization();
 

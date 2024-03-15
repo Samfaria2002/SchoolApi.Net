@@ -123,3 +123,9 @@ D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.Newt
 D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll
 D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\AutoMapper.dll
 D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\Microsoft.OpenApi.dll
+D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.Swagger.dll
+D:\projetos\UdemyApiDotNet\obj\Debug\netcoreapp3.1\UdemyApiDotNet.MvcApplicationPartsAssemblyInfo.cs
+D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\projetos\UdemyApiDotNet\bin\Debug\netcoreapp3.1\UdemyApiDotNet.xml

@@ -11,6 +11,9 @@ using AutoMapper;
 
 namespace UdemyApiDotNet.Controllers
 {   
+    /// <summary>
+    ///
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class AlunoController : ControllerBase
@@ -19,13 +22,21 @@ namespace UdemyApiDotNet.Controllers
         public readonly IRepository _repo;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="repo"></param>
+        /// <param name="mapper"></param>
         public AlunoController(IRepository repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;
         }
 
-        // api/aluno
+        /// <summary>
+        /// Método responsável por retornar todos os meus alunos
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get() {
             var response = _repo.GetAllAlunos(false);
@@ -36,6 +47,10 @@ namespace UdemyApiDotNet.Controllers
             Para acessar: api/aluno/{id} */
         /* Para usar via QueryString, a url ficará assim:
         http://localhost:5001/api/aluno/byId?id=1 */
+        /// <summary>
+        /// Método responsável por retornar apenas um aluno por meio do Id
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("byId")]
         public IActionResult GetById(int Id) {
 
@@ -51,6 +66,10 @@ namespace UdemyApiDotNet.Controllers
             return Ok(alunoDto);
         }
 
+        /// <summary>
+        /// Método responsável por retornar apenas um aluno por meio do nome e sobrenome
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("byName")]
         public IActionResult GetByName(string nome, string sobrenome) {
             var aluno = _repo.GetAlunoByName(nome, sobrenome, false);
@@ -63,6 +82,7 @@ namespace UdemyApiDotNet.Controllers
             return Ok(alunoDto);
         }
 
+        
         // api/aluno
         [HttpPost]
         public IActionResult Post(AlunoRegistrarDto model) {
