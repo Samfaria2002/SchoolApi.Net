@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UdemyApiDotNet.Models;
+using UdemyApiDotNet.Helpers;
 
 namespace UdemyApiDotNet.Data
 {
@@ -13,6 +14,7 @@ namespace UdemyApiDotNet.Data
         void Delete<T>(T entity) where T : class;
         bool SaveChanges();
 
+        Task<PageList<Aluno>> GetAllAlunosAsync(PageParameters pageParameters, bool includeProfessor);
         Aluno[] GetAllAlunos(bool includeProfessor);
         Aluno[] GetAllAlunosByDisciplinaId(int disciplinaId, bool includeProfessor = false);
         Aluno GetAlunoById(int alunoId, bool includeProfessor = false);

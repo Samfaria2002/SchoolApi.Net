@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UdemyApiDotNet.Models;
 using Microsoft.EntityFrameworkCore;
+using UdemyApiDotNet.Helpers;
 
 namespace UdemyApiDotNet.Data
 {
@@ -47,6 +48,47 @@ namespace UdemyApiDotNet.Data
             //ordenação
             query = query.AsNoTracking().OrderBy(a => a.Id);
             return query.ToArray();
+        }
+
+        public async Task<PageList<Aluno>> GetAllAlunosAsync(
+            PageParameters pageParameters,
+            bool includeProfessor
+            ) {
+            
+            //query aluno
+            IQueryable<Aluno> query = _context.Alunos;
+            
+            //join
+            if (includeProfessor) {
+                query = query.Include(a => a.AlunosDisciplinas)
+                            .ThenInclude(ad => ad.Disciplina)
+                            .ThenInclude(d => d.Professor);
+            }
+
+            //ordenação
+            query = query.AsNoTracking().OrderBy(a => a.Id);
+
+            if(!string.IsNullOrEmpty(pageParameters.Nome)) {
+                query = query.Where(aluno => aluno.Nome
+                            .ToUpper()
+                            .Contains(pageParameters.Nome.ToUpper()) ||
+                            aluno.Sobrenome
+                            .ToUpper()
+                            .Contains(pageParameters.Nome.ToUpper())
+                );
+            }
+
+            if (pageParameters.Matricula > 0) {
+                query = query.Where(aluno => aluno.Matricula == pageParameters.Matricula);
+            }
+
+            if (pageParameters.Ativo != null) {
+                query = query.Where(aluno => aluno.Ativo == (pageParameters.Ativo != 0));
+            }
+            
+
+            //return await query.ToListAsync();
+            return await PageList<Aluno>.CreateAsync(query, pageParameters.PageNumber, pageParameters.PageSize);
         }
 
         public Aluno[] GetAllAlunosByDisciplinaId(int disciplinaId, bool includeProfessor = false) {

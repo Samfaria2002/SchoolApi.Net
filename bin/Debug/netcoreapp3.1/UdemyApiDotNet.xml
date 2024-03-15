@@ -16,7 +16,7 @@
              <param name="repo"></param>
              <param name="mapper"></param>
         </member>
-        <member name="M:UdemyApiDotNet.Controllers.AlunoController.Get">
+        <member name="M:UdemyApiDotNet.Controllers.AlunoController.Get(UdemyApiDotNet.Helpers.PageParameters)">
             <summary>
             Método responsável por retornar todos os meus alunos
             </summary>

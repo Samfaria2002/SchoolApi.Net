@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UdemyApiDotNet.Data;
 using UdemyApiDotNet.Models;
+using UdemyApiDotNet.Helpers;
 using Microsoft.EntityFrameworkCore;
 using UdemyApiDotNet.Dtos;
 using AutoMapper;
@@ -38,9 +39,13 @@ namespace UdemyApiDotNet.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Get() {
-            var response = _repo.GetAllAlunos(false);
-            return Ok(_mapper.Map<IEnumerable<AlunoDto>>(response));
+        public async Task<IActionResult> Get([FromQuery]PageParameters pageParameters) {
+            
+            var alunos = await _repo.GetAllAlunosAsync(pageParameters, false);
+            var alunosResult = _mapper.Map<IEnumerable<AlunoDto>>(alunos);
+
+            Response.AddPagination(alunos.CurrentPage, alunos.PageSize, alunos.TotalCount, alunos.TotalPages);
+            return Ok(alunosResult);
         }
 
         /* [HttpGet("{id:int}")]
