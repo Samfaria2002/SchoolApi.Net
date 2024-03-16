@@ -34,6 +34,8 @@ namespace UdemyApiDotNet
 
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddCors();
 
             services.AddDbContext<DataContext>(
                 context => context.UseMySql(Configuration.GetConnectionString("MySqlConnection"), providerOptions => providerOptions.EnableRetryOnFailure())

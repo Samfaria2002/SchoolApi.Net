@@ -13,7 +13,7 @@ services:
     image: "mysql:5.7"
     container_name: mysql
     ports:
-      - "3307:3307"
+      - "3307:3306"
     volumes:
       - UdemyApiDb:/var/lib/mysql
     networks:
