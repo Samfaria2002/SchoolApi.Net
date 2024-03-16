@@ -17,6 +17,9 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO;
 using System.Reflection;
 using System.Security.Policy;
+using Pomelo.EntityFrameworkCore.MySql;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 
 namespace UdemyApiDotNet
 {
@@ -31,8 +34,9 @@ namespace UdemyApiDotNet
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddDbContext<DataContext>(
-                context => context.UseSqlite(Configuration.GetConnectionString("Default"))
+                context => context.UseMySql(Configuration.GetConnectionString("MySqlConnection"), providerOptions => providerOptions.EnableRetryOnFailure())
             );
 
             services.AddControllers().AddNewtonsoftJson(

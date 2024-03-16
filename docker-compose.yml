@@ -1,0 +1,40 @@
+version: '3.8'
+
+volumes:
+  UdemyApiDb:
+
+networks:
+  mysqlNet:
+  udemyapiNET:
+
+services:
+
+  mysql:
+    image: "mysql:5.7"
+    container_name: mysql
+    ports:
+      - "3307:3307"
+    volumes:
+      - UdemyApiDb:/var/lib/mysql
+    networks:
+      - mysqlNet
+    environment:
+      - MYSQL_ROOT_PASSWORD=lalaland
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - bind-address= 0.0.0.0
+  
+  udemyapi:
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: udemyapi
+    networks:
+      - mysqlNet
+      - udemyapiNET
+    ports:
+      - 5000:80
+    environment:
+      - DBHOST=mysql
+    depends_on:
+      - mysql
